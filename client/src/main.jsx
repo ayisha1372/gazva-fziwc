@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import './styles/style.css';
 import './styles/additions.css';
 import './styles/polish.css';
+import './styles/testimonials.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

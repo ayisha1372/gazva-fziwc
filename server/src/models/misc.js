@@ -33,6 +33,7 @@ const testimonialSchema = new mongoose.Schema(
   {
     quote: { type: String, required: true, trim: true, maxlength: 500 },
     author: { type: String, trim: true, maxlength: 120, default: '' },
+    photo: { type: String, trim: true, default: '' },
     rating: { type: Number, min: 1, max: 5, default: 5 },
     order: { type: Number, default: 0, index: true },
   },

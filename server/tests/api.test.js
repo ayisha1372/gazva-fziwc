@@ -353,10 +353,19 @@ test('blog button link: admin-set, http(s) only, public, and no built-in blog ro
     social: { instagram: '', facebook: '', whatsapp: '', youtube: '' }, blogUrl });
   assert.equal((await a.put('/api/admin/settings', body('javascript:alert(1)'))).status, 400);
   assert.equal((await a.put('/api/admin/settings', body('ftp://x.example'))).status, 400);
-  assert.equal((await a.put('/api/admin/settings', body('https://gazva-insight.vercel.app/'))).status, 200);
-  assert.equal((await client().get('/api/settings')).data.blogUrl, 'https://gazva-insight.vercel.app/');
+  assert.equal((await a.put('/api/admin/settings', body('https://blog.example.org'))).status, 200);
+  assert.equal((await client().get('/api/settings')).data.blogUrl, 'https://blog.example.org');
   assert.equal((await a.put('/api/admin/settings', body(''))).status, 200);
-  assert.equal((await client().get('/api/settings')).data.blogUrl, 'https://gazva-insight.vercel.app/');
+  assert.equal((await client().get('/api/settings')).data.blogUrl, '');
   assert.equal((await client().get('/api/articles')).status, 404);
   assert.equal((await a.get('/api/admin/articles')).status, 404);
+});
+
+test('testimonials carry a photo for the avatar, validated like every other image field', async () => {
+  const a = client(); await a.post('/api/auth/login', ADMIN);
+  const ok = await a.post('/api/admin/testimonials', { quote: 'Lovely union.', author: 'Aisha K, Fiqh Department', photo: '/uploads/abc-123.png', rating: 5 });
+  assert.equal(ok.status, 201);
+  assert.equal(ok.data.photo, '/uploads/abc-123.png');
+  assert.equal((await a.post('/api/admin/testimonials', { quote: 'x', photo: 'javascript:alert(1)' })).status, 400);
+  assert.equal((await client().get('/api/testimonials')).data.some((t) => t.photo === '/uploads/abc-123.png'), true);
 });

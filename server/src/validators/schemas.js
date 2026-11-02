@@ -139,6 +139,7 @@ export const advisorSchema = z.object({
 export const testimonialSchema = z.object({
   quote: text(500, 1),
   author: optText(120),
+  photo: imageUrl,
   rating: z.coerce.number().int().min(1).max(5).default(5),
   order,
 });

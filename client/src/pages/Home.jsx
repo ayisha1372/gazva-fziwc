@@ -2,55 +2,81 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useApi, useSettings, useTitle } from '../hooks/index.js';
-import { AnimatedNumber, Avatar, ArrowRight, Reveal, rise, stagger } from '../components/ui/index.jsx';
+import { AnimatedNumber, Avatar, ArrowRight, PersonIcon, Reveal, SmartImage, rise, stagger } from '../components/ui/index.jsx';
 import EventCard from '../components/events/EventCard.jsx';
+
+function splitAuthor(a = '') {
+  const i = a.indexOf(',');
+  return i < 0 ? [a.trim(), ''] : [a.slice(0, i).trim(), a.slice(i + 1).trim()];
+}
+
+const QuoteMark = () => (
+  <svg className="testi-qmark" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M7.2 6C4.9 6 3 7.9 3 10.2c0 2.2 1.6 3.9 3.7 4.1-.2 1.3-1.1 2.4-2.6 3.1l.7 1.6c3.1-1 5.2-3.4 5.2-7.3V10C10 7.8 8.8 6 7.2 6zm9.2 0C14.1 6 12.2 7.9 12.2 10.2c0 2.2 1.6 3.9 3.7 4.1-.2 1.3-1.1 2.4-2.6 3.1l.7 1.6c3.1-1 5.2-3.4 5.2-7.3V10C19.2 7.8 18 6 16.4 6z" /></svg>
+);
+
+function TestiCard({ t, pos }) {
+  const [name, role] = splitAuthor(t.author);
+  return (
+    <figure className={`testi-card ${pos}`}>
+      <span className="testi-offset" aria-hidden="true" />
+      <span className="testi-blob" aria-hidden="true" />
+      <div className="testi-avatar"><SmartImage src={t.photo} alt={name ? `Photo of ${name}` : ''} fallback={<PersonIcon />} /></div>
+      <div className="testi-body">
+        <figcaption><strong>{name || 'Gazva student'}</strong>{role && <span>{role}</span>}</figcaption>
+        <QuoteMark />
+        <blockquote>{t.quote}</blockquote>
+        {pos === 'center' && t.rating > 0 && <div className="testi-stars" aria-label={`${t.rating} out of 5 stars`}>{'★'.repeat(t.rating)}</div>}
+      </div>
+    </figure>
+  );
+}
+
+const trioVariants = {
+  enter: (d) => ({ opacity: 0, x: d * 70 }),
+  center: { opacity: 1, x: 0 },
+  exit: (d) => ({ opacity: 0, x: d * -70 }),
+};
 
 function Testimonials({ items }) {
   const [i, setI] = useState(0);
+  const [dir, setDir] = useState(1);
   const [paused, setPaused] = useState(false);
   const n = items.length;
   const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
+  const go = (d) => { setDir(d); setI((x) => (x + d + n) % n); };
+  const jump = (k) => { setDir(k > i ? 1 : -1); setI(k); };
+
   useEffect(() => {
     if (n < 2 || paused || reduce) return undefined;
-    const t = setInterval(() => setI((x) => (x + 1) % n), 5000);
+    const t = setInterval(() => { setDir(1); setI((x) => (x + 1) % n); }, 6500);
     return () => clearInterval(t);
   }, [n, paused, reduce]);
 
   if (!n) return null;
-  const t = items[i % n];
+  const at = (k) => items[(k + n) % n];
+  const trio = n >= 3 ? [[at(i - 1), 'left'], [at(i), 'center'], [at(i + 1), 'right']] : n === 2 ? [[at(i), 'center'], [at(i + 1), 'right']] : [[at(i), 'center']];
+
   return (
-    <section className="feedback-section">
-      <div className="container">
-        <div className="section-header">
-          <div className="section-tag">Voices</div>
-          <h2 className="section-title">What Students Say</h2>
-          <div className="section-divider" />
+    <section className="testi-section" aria-roledescription="carousel" aria-label="What students say"
+      onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+      <div className="testi-inner">
+        <div className="testi-head">
+          {n > 1 && <button type="button" className="testi-arrow" aria-label="Previous testimonial" onClick={() => go(-1)}><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg></button>}
+          <div className="testi-title"><span className="testi-tag">Voices</span><h2>What Students Say</h2></div>
+          {n > 1 && <button type="button" className="testi-arrow" aria-label="Next testimonial" onClick={() => go(1)}><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg></button>}
         </div>
-        <div className="slider-wrapper" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-          <AnimatePresence mode="wait">
-            <motion.div key={t.id} className="slide active" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.4 }} aria-live="polite">
-              <div className="feedback-card">
-                <div className="feedback-stars" aria-label={`${t.rating} out of 5 stars`}>{'★'.repeat(t.rating)}</div>
-                <p className="feedback-text">"{t.quote}"</p>
-                <div className="feedback-author">— {t.author}</div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          {n > 1 && (
-            <div className="slider-controls">
-              <button type="button" className="slider-btn" aria-label="Previous" onClick={() => setI((x) => (x - 1 + n) % n)}>
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
-              </button>
-              <div className="slider-dots">
-                {items.map((s, k) => <button type="button" key={s.id} aria-label={`Show testimonial ${k + 1}`} className={`dot${k === i % n ? ' active' : ''}`} onClick={() => setI(k)} />)}
-              </div>
-              <button type="button" className="slider-btn" aria-label="Next" onClick={() => setI((x) => (x + 1) % n)}>
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" /></svg>
-              </button>
-            </div>
-          )}
-        </div>
+        {n > 1 && (
+          <div className="testi-dots">
+            {items.map((s, k) => <button type="button" key={s.id} aria-label={`Show testimonial ${k + 1}`} aria-current={k === i} className={k === i ? 'active' : ''} onClick={() => jump(k)} />)}
+          </div>
+        )}
+        <AnimatePresence mode="wait" custom={dir} initial={false}>
+          <motion.div key={i} className={`testi-trio n${Math.min(n, 3)}`} custom={dir} variants={trioVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            drag={n > 1 ? 'x' : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.18} onDragEnd={(_e, info) => { if (info.offset.x < -60) go(1); else if (info.offset.x > 60) go(-1); }} aria-live="polite">
+            {trio.map(([t, pos]) => <TestiCard key={`${t.id}-${pos}`} t={t} pos={pos} />)}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );
@@ -61,8 +87,7 @@ const STAT_ICONS = [
   ico(<><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" /></>),
   ico(<><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></>),
   ico(<><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z" /></>),
-  ico(<><path d="M2 10l10-6 10 6-10 6z" /><path d="M6 12v5c3 2.4 9 2.4 12 0v-5" /></>
-)
+  ico(<><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" /></>),
 ];
 const DISCOVER = [
   ['/departments', 'Departments', 'Meet the academic departments and their teams.', ico(<><path d="M2 10l10-6 10 6-10 6z" /><path d="M6 12v5c3 2.4 9 2.4 12 0v-5" /></>)],
@@ -89,9 +114,13 @@ export default function Home() {
           <motion.p variants={rise} className="hero-sub">{hero.subtitle}</motion.p>
           <motion.div variants={rise} className="hero-cta">
             <Link to="/core" className="btn-primary">Meet the Core<ArrowRight /></Link>
-            <Link to="/contact" className="btn-outline">Get In Touch</Link>
+            <Link to="/wings" className="btn-outline">Explore Wings</Link>
           </motion.div>
         </motion.div>
+        <span className="hero-cue" aria-hidden="true" />
+        <svg className="hero-wave" viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 60L1440 60L1440 20C1200 60 900 0 720 20C540 40 240 0 0 20L0 60Z" fill="#ffffff" />
+        </svg>
       </section>
 
       <section className="stats-section">

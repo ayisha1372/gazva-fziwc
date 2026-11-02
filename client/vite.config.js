@@ -6,7 +6,8 @@ const API = process.env.VITE_DEV_API || 'http://localhost:4000';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5173,
+    port: 5174,
+  strictPort: true,
     // Same-origin in development too, so the httpOnly auth cookie just works.
     proxy: { '/api': API, '/uploads': API },
   },

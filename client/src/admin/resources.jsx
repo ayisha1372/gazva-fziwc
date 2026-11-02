@@ -162,7 +162,7 @@ export const defs = {
   },
   testimonials: {
     resource: 'testimonials', title: 'Testimonials', singular: 'Testimonial', nameKey: 'author', subtitle: '“What Students Say” slider on the home page.',
-    fields: [{ key: 'quote', label: 'Quote', type: 'textarea', rows: 3, max: 500, required: true, wide: true }, { key: 'author', label: 'Author', max: 120 }, { key: 'rating', label: 'Stars (1–5)', type: 'number', min: 1, default: 5 }, orderField],
-    columns: [{ label: 'Order', key: 'order', className: 'narrow' }, { label: 'Quote', render: (r) => <span className="adm-clip">{r.quote}</span> }, { key: 'author', label: 'Author' }],
+    fields: [{ key: 'quote', label: 'Quote', type: 'textarea', rows: 3, max: 500, required: true, wide: true }, { key: 'author', label: 'Name, role', max: 120, help: 'Write it as “Name, Role” — e.g. Aisha K, Fiqh Department. The part before the first comma is the name; the rest is the role.' }, { key: 'rating', label: 'Stars (1–5)', type: 'number', min: 1, default: 5 }, orderField, { key: 'photo', label: 'Photo (shown in the round avatar)', type: 'image', wide: true }],
+    columns: [{ label: 'Order', key: 'order', className: 'narrow' }, { label: 'Student', render: (r) => <span className="adm-namecell"><Thumb src={r.photo} round name={r.author} /><b>{(r.author || '').split(',')[0]}</b></span> }, { label: 'Quote', render: (r) => <span className="adm-clip">{r.quote}</span> }],
   },
 };

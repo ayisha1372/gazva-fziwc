@@ -1,0 +1,62 @@
+/* "What Students Say" — three-card carousel: big centre card, organic blob shapes with an offset rose shape behind. */
+.testi-section { position: relative; overflow: hidden; padding: 5.5rem 1.5rem 6.5rem; color: #fff;
+  background: radial-gradient(55% 60% at 85% 10%, rgba(212,148,158,.22), transparent 62%), radial-gradient(50% 60% at 5% 95%, rgba(122,58,138,.45), transparent 65%), linear-gradient(160deg, #240a2b 0%, #2e0c35 50%, #3a1445 100%); }
+.testi-section::before { content: ''; position: absolute; inset: 0; background-image: var(--geo-star); background-size: 88px 88px; opacity: .8; -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 45%, #000 15%, transparent 80%); mask-image: radial-gradient(ellipse 75% 70% at 50% 45%, #000 15%, transparent 80%); pointer-events: none; }
+.testi-inner { position: relative; max-width: 1160px; margin: 0 auto; }
+
+.testi-head { display: flex; align-items: center; justify-content: center; gap: clamp(1rem, 6vw, 5rem); }
+.testi-title { text-align: center; }
+.testi-tag { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--rose-light); margin-bottom: .5rem; }
+.testi-title h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.7rem); line-height: 1.15; color: #fff; }
+.testi-arrow { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.28); background: rgba(255,255,255,.06); color: var(--rose-light); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: background .3s, transform .3s, color .3s, border-color .3s; flex-shrink: 0; }
+.testi-arrow:hover { background: var(--rose); color: var(--plum-deep); border-color: var(--rose); transform: scale(1.1); }
+.testi-dots { display: flex; justify-content: center; gap: .55rem; margin: 1.4rem 0 3.6rem; }
+.testi-dots button { width: 9px; height: 9px; padding: 0; border-radius: 50%; border: none; background: rgba(255,255,255,.35); cursor: pointer; transition: all .3s; }
+.testi-dots button:hover { background: rgba(255,255,255,.7); }
+.testi-dots button.active { width: 26px; border-radius: 6px; background: linear-gradient(90deg, var(--rose), var(--rose-light)); }
+
+.testi-trio { display: grid; align-items: center; gap: 2.2rem; touch-action: pan-y; cursor: grab; }
+.testi-trio:active { cursor: grabbing; }
+.testi-trio.n3 { grid-template-columns: 1fr 1.28fr 1fr; }
+.testi-trio.n2 { grid-template-columns: 1.28fr 1fr; max-width: 900px; margin: 0 auto; }
+.testi-trio.n1 { grid-template-columns: minmax(0, 480px); justify-content: center; }
+
+.testi-card { position: relative; margin: 0; padding-top: 46px; user-select: none; transition: transform .5s var(--ease), opacity .4s; }
+.testi-blob, .testi-offset { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; pointer-events: none; }
+.testi-blob { z-index: 1; background: linear-gradient(160deg, #54275f, #3f1a4a); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 24px 50px -18px rgba(0,0,0,.55); border-radius: 44px 70px 48px 76px / 52px 60px 50px 70px; transform: rotate(-1.6deg); }
+.testi-offset { z-index: 0; background: linear-gradient(135deg, var(--rose), #b9648a); border-radius: 70px 44px 78px 46px / 66px 50px 66px 52px; transform: translate(16px, 18px) rotate(3.4deg); opacity: .92; }
+.testi-card.left .testi-blob { border-radius: 74px 42px 66px 40px / 60px 44px 64px 50px; transform: rotate(2.4deg); }
+.testi-card.left .testi-offset { transform: translate(-16px, 16px) rotate(-3deg); border-radius: 44px 72px 42px 70px / 50px 66px 52px 62px; }
+.testi-card.right .testi-blob { border-radius: 42px 76px 40px 68px / 50px 64px 52px 58px; transform: rotate(-2.4deg); }
+.testi-card.left, .testi-card.right { transform: scale(.93); opacity: .82; }
+.testi-card.left:hover, .testi-card.right:hover { opacity: 1; transform: scale(.95); }
+.testi-card.center .testi-blob { transform: rotate(-1.2deg); }
+
+.testi-avatar { position: absolute; z-index: 3; top: 0; left: 50%; width: 84px; height: 84px; margin-left: -42px; border-radius: 50%; overflow: hidden; background: var(--plum-pale); border: 4px solid #fff; box-shadow: 0 10px 26px rgba(0,0,0,.4), 0 0 0 4px rgba(212,148,158,.45); display: flex; align-items: center; justify-content: center; color: var(--plum-mist); }
+.testi-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.testi-avatar svg { width: 46px; height: 46px; }
+.testi-card.center .testi-avatar { width: 100px; height: 100px; margin-left: -50px; }
+
+.testi-body { position: relative; z-index: 2; padding: 3.6rem 2rem 2.4rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.testi-card.center .testi-body { padding: 4.6rem 2.4rem 2.8rem; }
+.testi-body figcaption { display: flex; flex-direction: column; gap: .15rem; margin-bottom: .6rem; }
+.testi-body figcaption strong { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #fff; }
+.testi-card.center figcaption strong { font-size: 1.4rem; }
+.testi-body figcaption span { font-size: .78rem; letter-spacing: .06em; color: var(--rose-light); }
+.testi-qmark { color: var(--rose); margin-bottom: .5rem; }
+.testi-body blockquote { margin: 0; font-size: .88rem; line-height: 1.75; color: rgba(255,255,255,.82); display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; }
+.testi-card.center blockquote { font-size: 1.02rem; line-height: 1.8; color: #fff; -webkit-line-clamp: 8; }
+.testi-stars { margin-top: 1rem; color: #e3b64f; letter-spacing: .25em; font-size: .95rem; }
+
+@media (max-width: 960px) {
+  .testi-trio.n3, .testi-trio.n2 { grid-template-columns: minmax(0, 520px); justify-content: center; }
+  .testi-card.left, .testi-card.right { display: none; }
+  .testi-card.center .testi-blob { transform: rotate(-1deg); }
+}
+@media (max-width: 560px) {
+  .testi-section { padding: 4rem 1rem 5rem; }
+  .testi-head { gap: .7rem; }
+  .testi-arrow { width: 38px; height: 38px; }
+  .testi-body, .testi-card.center .testi-body { padding: 4.3rem 1.4rem 2.2rem; }
+  .testi-offset { transform: translate(10px, 14px) rotate(2.6deg); }
+}
