@@ -1,0 +1,23 @@
+# docker compose up --build        then:  docker compose exec app npm run seed
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on: [mongo]
+    ports: ["4000:4000"]
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/gazva
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in a .env file next to this one}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:4000}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      VIEWER_USERNAME: ${VIEWER_USERNAME:-rankings}
+      VIEWER_PASSWORD: ${VIEWER_PASSWORD:-}
+    volumes: [uploads:/data/uploads]
+volumes:
+  mongo-data:
+  uploads:
