@@ -64,17 +64,34 @@ export const contactLimiter = rateLimit({
 
 /**
  * Cookie-based sessions need a CSRF answer. SameSite=Lax already blocks cross-site writes in
- * modern browsers; this adds a second layer by rejecting state-changing requests whose Origin
- * header is present but is not this site or a whitelisted client origin.
+ * modern browsers; this adds a second layer for state-changing requests. A request is allowed when ANY of:
+ *   1. the browser itself says it is same-origin (Sec-Fetch-Site - set by the browser, scripts cannot fake it),
+ *   2. the Origin's host equals the Host the request reached, or the host forwarded by a reverse proxy,
+ *   3. the Origin is listed in CLIENT_URL,
+ *   4. (development only) the Origin is localhost / 127.0.0.1 on any port.
+ * Everything else with an Origin header - e.g. another website's form or script - is rejected.
  */
 export function originGuard(req, _res, next) {
   if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+
+  const fetchSite = req.headers['sec-fetch-site'];
+  if (fetchSite === 'same-origin' || fetchSite === 'none') return next();
+
   const origin = req.headers.origin;
   if (!origin) return next();
-  const host = req.headers.host;
+
   try {
     const o = new URL(origin);
-    if (o.host === host || env.clientOrigins.includes(origin)) return next();
-  } catch { /* fallthrough */ }
-  return next(ApiError.forbidden('Cross-site request blocked.'));
+    const hosts = [req.headers.host, req.headers['x-forwarded-host']]
+      .filter(Boolean)
+      .flatMap((h) => String(h).split(',').map((x) => x.trim()));
+    if (hosts.includes(o.host)) return next();
+    if (env.clientOrigins.includes(origin.replace(/\/$/, ''))) return next();
+    if (!env.isProd && ['localhost', '127.0.0.1', '[::1]'].includes(o.hostname)) return next();
+    return next(ApiError.forbidden(
+      `Cross-site request blocked (the site was opened at ${o.origin}). If this is your own site, add that address to CLIENT_URL in server/.env and restart the server.`
+    ));
+  } catch {
+    return next(ApiError.forbidden('Cross-site request blocked.'));
+  }
 }
