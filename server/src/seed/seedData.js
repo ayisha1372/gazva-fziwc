@@ -25,7 +25,6 @@ export const settings = {
     'To foster holistic student development through inclusive programs, cultural initiatives, academic support, and leadership opportunities — creating a vibrant campus community where every student voice is heard and every talent celebrated.',
   footer: {
     sub: "Students Union of Fathima Zahra Islamic Women's College",
-    description: 'Empowering students through leadership, culture, and academic excellence since 2013.',
     address: "Fathima Zahra Islamic Women's College, Chemmad, Malappuram, Kerala - 676306\nRun by Darul Huda Islamic University, Chemmad.",
     email: 'gazvafathimazahra@gmail.com',
   },

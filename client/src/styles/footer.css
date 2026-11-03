@@ -7,7 +7,7 @@ footer.ft { position: relative; overflow: hidden; padding: 0; color: rgba(255,25
 
 /* brand block */
 .ft-logo { display: inline-flex; align-items: center; gap: .9rem; margin-bottom: 1.4rem; }
-.ft-mark { width: 56px; height: 56px; border-radius: 16px; background: #fff; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; }
+.ft-mark { width: 56px; height: 56px; border-radius: 16px; background: #fff; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; BORDER : 1px solid rgba(255,255,255,.12); }
 .ft-mark img { width: 100%; height: 100%; object-fit: contain; }
 .ft-name { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: -.01em; line-height: 1; }
 .ft-line1 { font-size: 1rem; font-weight: 500; color: rgba(255,255,255,.9); line-height: 1.55; max-width: 34ch; margin-bottom: .6rem; }
@@ -26,11 +26,46 @@ footer.ft { position: relative; overflow: hidden; padding: 0; color: rgba(255,25
 .ft-col ul a:hover { color: var(--rose-light); transform: translateX(4px); }
 
 /* social buttons */
-.ft-social { display: flex; flex-direction: column; gap: .7rem; align-items: flex-start; }
-.ft-social-btn { display: inline-flex; align-items: center; gap: .65rem; padding: .55rem 1.1rem .55rem .6rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.05); color: rgba(255,255,255,.86); font-size: .9rem; font-weight: 500; transition: all .3s var(--ease); }
-.ft-social-btn svg { width: 34px; height: 34px; padding: 8px; border-radius: 50%; background: rgba(212,148,158,.22); color: var(--rose-light); transition: all .3s; box-sizing: border-box; }
-.ft-social-btn:hover { background: linear-gradient(135deg, var(--rose), #e7b4bd); border-color: transparent; color: var(--plum-deep); transform: translateY(-3px); box-shadow: 0 14px 28px -12px rgba(212,148,158,.7); }
-.ft-social-btn:hover svg { background: rgba(46,12,53,.15); color: var(--plum-deep); }
+.ft-social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ft-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255,255,255,.8);
+  text-decoration: none;
+  transition: all .3s ease;
+}
+
+.ft-social-btn svg {
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.ft-social-btn span {
+  display: none;
+}
+
+.ft-social-btn:hover {
+  color: var(--rose-light);
+  border-color: var(--rose-light);
+  background: rgba(212,148,158,.12);
+  transform: translateY(-3px);
+}
 
 /* giant watermark, cropped at the bottom like a signature */
 .ft-mega { margin-top: 1.6rem; font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(6rem, 24vw, 21rem); line-height: .92; height: .66em; margin-bottom: -.02em; overflow: hidden; text-align: center; letter-spacing: -.02em; user-select: none; pointer-events: none;
@@ -41,13 +76,15 @@ footer.ft { position: relative; overflow: hidden; padding: 0; color: rgba(255,25
 .ft-bottom strong { color: rgba(255,255,255,.62); font-weight: 600; }
 
 @media (max-width: 960px) {
-  .ft-top { grid-template-columns: 1fr; gap: 2.6rem; }
-  .ft-cols { grid-template-columns: 1fr 1fr; }
+.ft-top {
+  gap: 2rem;
+}  .ft-cols { grid-template-columns: 1fr 1fr; }
   .ft-address { grid-column: 1 / -1; }
 }
 @media (max-width: 560px) {
-  .ft-frame { padding: 3.2rem 1.25rem 0; border-left: none; border-right: none; }
-  .ft-bottom { padding-inline: 1.25rem; border-left: none; border-right: none; flex-direction: column; }
+.ft-frame {
+  padding: 2.8rem 2rem 0;
+}  .ft-bottom { padding-inline: 1.25rem; border-left: none; border-right: none; flex-direction: column; }
   .ft-cols { grid-template-columns: 1fr; gap: 2rem; }
   .ft-name { font-size: 1.7rem; }
 }
